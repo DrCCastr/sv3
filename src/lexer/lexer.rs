@@ -1,6 +1,6 @@
 use std::{clone, vec::Vec, collections::HashMap};
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum TokenType {
     Number,
     Identifier,
@@ -11,6 +11,7 @@ pub enum TokenType {
     Nil
 }
 
+#[derive(Debug)]
 pub struct Token {
     value: String,
     type_: TokenType
@@ -82,6 +83,8 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
                 }
             } else if isskipabble(&src[0].to_string()) {
                 src.remove(0);
+            } else {
+                println!("Unreconized character found in code: {}", &src[0].to_string());
             }
         }
     }
