@@ -8,7 +8,8 @@ pub enum TokenType {
     OpenParen, CloseParen,
     BinaryOperator,
     Let,
-    Nil
+    Nil,
+    EOF
 }
 
 #[derive(Debug)]
@@ -88,6 +89,6 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
             }
         }
     }
-    
+    tokens.push(Token::new("EOF".to_string(), TokenType::EOF));
     tokens
 }
