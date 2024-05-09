@@ -4,89 +4,104 @@ pub enum NodeType {
     Program,
     NumericLiteral,
     Identifier,
-    BinaryExpr
+    BinaryExpr,
 }
 
 pub struct Stmt {
-    pub kind: NodeType
+    pub kind: NodeType,
+    pub numeral_literal_value: i64,
+    pub program_body: Vec<Stmt>,
+    pub binary_expr_left: Expr,
+    pub binary_expr_right: Expr,
+    pub binary_expr_operator: String,
+    pub identifier_symbol: String,
+    pub numeric_literal_value: i64,
 }
 
 impl Stmt {
-    pub fn New(kind: NodeType) -> Self {
-        Self {
-            kind: kind
+    pub fn new(kind: NodeType, numeral_literal_value: i64, program_body: Vec<Stmt>, binary_expr_left: Expr, binary_expr_right: Expr, binary_expr_operator: String, identifier_symbol: String, numeric_literal_value: i64) -> Self {
+        Stmt {
+            kind,
+            numeral_literal_value,
+            program_body,
+            binary_expr_left,
+            binary_expr_right,
+            binary_expr_operator,
+            identifier_symbol,
+            numeric_literal_value,
+        }
+    }
+
+    pub fn default() -> Self {
+        Stmt {
+            kind: NodeType::Program,
+            numeral_literal_value: 0,
+            program_body: Vec::new(),
+            binary_expr_left: Expr,
+            binary_expr_right: Expr,
+            binary_expr_operator: String::new(),
+            identifier_symbol: String::new(),
+            numeric_literal_value: 0,
         }
     }
 }
 
-pub struct Program {
-    pub kind: NodeType,
-    pub body: Vec<Stmt>
-}
+pub struct Program;
 
 impl Program {
-    pub fn New(body: Vec<Stmt>) -> Self {
-        Self {
-            kind: NodeType::Program,
-            body: body
-        }
+    pub fn new(body: Vec<Stmt>) -> Stmt {
+        Stmt::new(NodeType::Program, 0, body, Expr, Expr, String::new(), String::new(), 0)
+    }
+
+    pub fn default() -> Stmt {
+        Stmt::default()
     }
 }
 
-pub struct Expr {
-    pub kind: NodeType
-}
+pub struct Expr;
 
 impl Expr {
-    pub fn New() -> Self {
-        Self {
-            kind: NodeType::BinaryExpr
-        }
+    pub fn new() -> Stmt {
+        Stmt::new(NodeType::BinaryExpr, 0, Vec::new(), Expr, Expr, String::new(), String::new(), 0)
+    }
+
+    pub fn default() -> Stmt {
+        Stmt::default()
     }
 }
 
-pub struct BinaryExpr {
-    pub kind: NodeType,
-    pub left: Expr,
-    pub right: Expr,
-    pub operator: String
-}
+pub struct BinaryExpr;
 
 impl BinaryExpr {
-    pub fn New(left: Expr, right: Expr, operator: String) -> Self {
-        Self {
-            kind: NodeType::BinaryExpr,
-            left: left,
-            right: right,
-            operator: operator
-        }
+    pub fn new(left: Expr, right: Expr, operator: String) -> Stmt {
+        Stmt::new(NodeType::BinaryExpr, 0, Vec::new(), left, right, operator, String::new(), 0)
+    }
+
+    pub fn default() -> Stmt {
+        Stmt::default()
     }
 }
 
-pub struct Identifier {
-    pub kind: NodeType,
-    pub symbol: String
-}
+pub struct Identifier;
 
 impl Identifier {
-    pub fn New(symbol: String) -> Self {
-        Self {
-            kind: NodeType::Identifier,
-            symbol: symbol
-        }
+    pub fn new(symbol: String) -> Stmt {
+        Stmt::new(NodeType::Identifier, 0, Vec::new(), Expr, Expr, String::new(), symbol, 0)
+    }
+
+    pub fn default() -> Stmt {
+        Stmt::default()
     }
 }
 
-pub struct NumericLiteral {
-    pub kind: NodeType,
-    pub value: i64
-}
+pub struct NumericLiteral;
 
 impl NumericLiteral {
-    fn New(value: i64) -> Self {
-        Self {
-            kind: NodeType::NumericLiteral,
-            value: value
-        }
+    pub fn new(value: i64) -> Stmt {
+        Stmt::new(NodeType::NumericLiteral, value, Vec::new(), Expr, Expr, String::new(), String::new(), value)
+    }
+
+    pub fn default() -> Stmt {
+        Stmt::default()
     }
 }
