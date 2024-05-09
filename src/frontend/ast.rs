@@ -1,5 +1,6 @@
 use std::vec::Vec;
 
+#[derive(Debug)]
 pub enum NodeType {
     Program,
     NumericLiteral,
@@ -7,6 +8,7 @@ pub enum NodeType {
     BinaryExpr,
 }
 
+#[derive(Debug)]
 pub struct Stmt {
     pub kind: NodeType,
     pub numeral_literal_value: f64,
@@ -58,6 +60,7 @@ impl Program {
     }
 }
 
+#[derive(Debug)]
 pub struct Expr;
 
 impl Expr {
