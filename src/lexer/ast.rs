@@ -9,17 +9,17 @@ pub enum NodeType {
 
 pub struct Stmt {
     pub kind: NodeType,
-    pub numeral_literal_value: i64,
+    pub numeral_literal_value: f64,
     pub program_body: Vec<Stmt>,
     pub binary_expr_left: Expr,
     pub binary_expr_right: Expr,
     pub binary_expr_operator: String,
     pub identifier_symbol: String,
-    pub numeric_literal_value: i64,
+    pub numeric_literal_value: f64,
 }
 
 impl Stmt {
-    pub fn new(kind: NodeType, numeral_literal_value: i64, program_body: Vec<Stmt>, binary_expr_left: Expr, binary_expr_right: Expr, binary_expr_operator: String, identifier_symbol: String, numeric_literal_value: i64) -> Self {
+    pub fn new(kind: NodeType, numeral_literal_value: f64, program_body: Vec<Stmt>, binary_expr_left: Expr, binary_expr_right: Expr, binary_expr_operator: String, identifier_symbol: String, numeric_literal_value: f64) -> Self {
         Stmt {
             kind,
             numeral_literal_value,
@@ -35,13 +35,13 @@ impl Stmt {
     pub fn default() -> Self {
         Stmt {
             kind: NodeType::Program,
-            numeral_literal_value: 0,
+            numeral_literal_value: 0.0,
             program_body: Vec::new(),
             binary_expr_left: Expr,
             binary_expr_right: Expr,
             binary_expr_operator: String::new(),
             identifier_symbol: String::new(),
-            numeric_literal_value: 0,
+            numeric_literal_value: 0.0,
         }
     }
 }
@@ -50,7 +50,7 @@ pub struct Program;
 
 impl Program {
     pub fn new(body: Vec<Stmt>) -> Stmt {
-        Stmt::new(NodeType::Program, 0, body, Expr, Expr, String::new(), String::new(), 0)
+        Stmt::new(NodeType::Program, 0.0, body, Expr, Expr, String::new(), String::new(), 0.0)
     }
 
     pub fn default() -> Stmt {
@@ -62,7 +62,7 @@ pub struct Expr;
 
 impl Expr {
     pub fn new() -> Stmt {
-        Stmt::new(NodeType::BinaryExpr, 0, Vec::new(), Expr, Expr, String::new(), String::new(), 0)
+        Stmt::new(NodeType::BinaryExpr, 0.0, Vec::new(), Expr, Expr, String::new(), String::new(), 0.0)
     }
 
     pub fn default() -> Stmt {
@@ -74,7 +74,7 @@ pub struct BinaryExpr;
 
 impl BinaryExpr {
     pub fn new(left: Expr, right: Expr, operator: String) -> Stmt {
-        Stmt::new(NodeType::BinaryExpr, 0, Vec::new(), left, right, operator, String::new(), 0)
+        Stmt::new(NodeType::BinaryExpr, 0.0, Vec::new(), left, right, operator, String::new(), 0.0)
     }
 
     pub fn default() -> Stmt {
@@ -86,7 +86,7 @@ pub struct Identifier;
 
 impl Identifier {
     pub fn new(symbol: String) -> Stmt {
-        Stmt::new(NodeType::Identifier, 0, Vec::new(), Expr, Expr, String::new(), symbol, 0)
+        Stmt::new(NodeType::Identifier, 0.0, Vec::new(), Expr, Expr, String::new(), symbol, 0.0)
     }
 
     pub fn default() -> Stmt {
@@ -97,7 +97,7 @@ impl Identifier {
 pub struct NumericLiteral;
 
 impl NumericLiteral {
-    pub fn new(value: i64) -> Stmt {
+    pub fn new(value: f64) -> Stmt {
         Stmt::new(NodeType::NumericLiteral, value, Vec::new(), Expr, Expr, String::new(), String::new(), value)
     }
 

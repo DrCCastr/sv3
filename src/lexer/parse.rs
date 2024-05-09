@@ -19,10 +19,18 @@ impl parser {
         self.tokens[0].type_ != TokenType::EOF
     }
     
+    fn eat(&mut self) -> Token {
+        let prev = self.tokens.remove(0);
+        prev
+    }
+    
     fn parse_primary_expr(&mut self) -> Stmt {
         let ts = self.tokens[0].type_.clone();
         if ts == TokenType::Identifier {
-            return Identifier::new(self.tokens[0].value.clone());
+            return Identifier::new(self.eat().value.clone());
+        } else if ts == TokenType::Number {
+            let number: f64  = self.eat().value.clone().parse().expect("f64");
+            return NumericLiteral::new(number);
         }
         return Stmt::default();
     }
