@@ -8,7 +8,7 @@ pub enum NodeType {
 }
 
 pub struct Stmt {
-    kind: NodeType
+    pub kind: NodeType
 }
 
 impl Stmt {
@@ -20,8 +20,8 @@ impl Stmt {
 }
 
 pub struct Program {
-    kind: NodeType,
-    body: Vec<Stmt>
+    pub kind: NodeType,
+    pub body: Vec<Stmt>
 }
 
 impl Program {
@@ -34,7 +34,7 @@ impl Program {
 }
 
 pub struct Expr {
-    kind: NodeType
+    pub kind: NodeType
 }
 
 impl Expr {
@@ -46,10 +46,10 @@ impl Expr {
 }
 
 pub struct BinaryExpr {
-    kind: NodeType,
-    left: Expr,
-    right: Expr,
-    operator: String
+    pub kind: NodeType,
+    pub left: Expr,
+    pub right: Expr,
+    pub operator: String
 }
 
 impl BinaryExpr {
@@ -64,8 +64,8 @@ impl BinaryExpr {
 }
 
 pub struct Identifier {
-    kind: NodeType,
-    symbol: String
+    pub kind: NodeType,
+    pub symbol: String
 }
 
 impl Identifier {
@@ -78,8 +78,8 @@ impl Identifier {
 }
 
 pub struct NumericLiteral {
-    kind: NodeType,
-    value: i64
+    pub kind: NodeType,
+    pub value: i64
 }
 
 impl NumericLiteral {
