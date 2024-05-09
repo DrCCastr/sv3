@@ -32,6 +32,7 @@ impl parser {
             let number: f64  = self.eat().value.clone().parse().expect("f64");
             return NumericLiteral::new(number);
         }
+        println!("Unexpected token found during Parsing: {}", self.tokens[0].value);
         return Stmt::default();
     }
     
