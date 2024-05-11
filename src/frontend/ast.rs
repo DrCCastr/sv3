@@ -1,3 +1,6 @@
+use std::fmt;
+
+#[derive(Debug)]
 pub enum NodeType {
     Program,
     NumericLiteral,
@@ -5,7 +8,7 @@ pub enum NodeType {
     BinaryExpr,
 }
 
-pub trait Stmt {}
+pub trait Stmt: fmt::Debug {}
 
 pub trait Expr: Stmt {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt>;
@@ -16,6 +19,12 @@ pub struct Program {
     pub body: Vec<Box<dyn Stmt>>,
 }
 
+impl fmt::Debug for Program {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Program {{ kind: {:?}, body: {:?} }}", self.kind, self.body)
+    }
+}
+
 pub struct BinaryExpr {
     pub kind: NodeType,
     pub left: Box<dyn Expr>,
@@ -23,9 +32,25 @@ pub struct BinaryExpr {
     pub operator: String,
 }
 
+impl fmt::Debug for BinaryExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "BinaryExpr {{ kind: {:?}, left: {:?}, right: {:?}, operator: {:?} }}",
+            self.kind, self.left, self.right, self.operator
+        )
+    }
+}
+
 pub struct Identifier {
     pub kind: NodeType,
     pub symbol: String,
+}
+
+impl fmt::Debug for Identifier {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Identifier {{ kind: {:?}, symbol: {:?} }}", self.kind, self.symbol)
+    }
 }
 
 pub struct NumericLiteral {
@@ -33,10 +58,17 @@ pub struct NumericLiteral {
     pub value: i32,
 }
 
+impl fmt::Debug for NumericLiteral {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "NumericLiteral {{ kind: {:?}, value: {:?} }}", self.kind, self.value)
+    }
+}
+
 impl Stmt for Program {}
 impl Stmt for BinaryExpr {}
 impl Stmt for Identifier {}
 impl Stmt for NumericLiteral {}
+
 impl Expr for BinaryExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self
