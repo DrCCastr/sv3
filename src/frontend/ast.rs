@@ -21,7 +21,7 @@ pub struct Program {
 
 impl fmt::Debug for Program {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Program {{ kind: {:?}, body: {:?} }}", self.kind, self.body)
+        write!(f, "Program {{\nkind: {:#?},\nbody: {:#?} }}\n", self.kind, self.body)
     }
 }
 
@@ -36,7 +36,7 @@ impl fmt::Debug for BinaryExpr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "BinaryExpr {{ kind: {:?}, left: {:?}, right: {:?}, operator: {:?} }}",
+            "BinaryExpr {{\n\tkind: {:#?},\n\tleft: {:#?},\n\tright: {:#?},\n\toperator: {:#?} \n}}\n",
             self.kind, self.left, self.right, self.operator
         )
     }
@@ -49,7 +49,7 @@ pub struct Identifier {
 
 impl fmt::Debug for Identifier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Identifier {{ kind: {:?}, symbol: {:?} }}", self.kind, self.symbol)
+        write!(f, "Identifier {{\n\tkind: {:#?},\n\tsymbol: {:#?} \n}}\n", self.kind, self.symbol)
     }
 }
 
@@ -60,7 +60,7 @@ pub struct NumericLiteral {
 
 impl fmt::Debug for NumericLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "NumericLiteral {{ kind: {:?}, value: {:?} }}", self.kind, self.value)
+        write!(f, "NumericLiteral {{\n\tkind: {:#?},\n\tvalue: {:#?} \n}}\n", self.kind, self.value)
     }
 }
 

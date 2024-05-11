@@ -41,7 +41,7 @@ impl Parser {
         while self.not_eof() {
             program.body.push(self.parse_stmt());
         }
-
+        
         program
     }
 
@@ -95,8 +95,8 @@ impl Parser {
                 value
             }
             _ => {
-                eprintln!("Unexpected token found during parsing! {:?}", self.at());
-                std::process::exit(1);
+                println!("Unexpected token found during parsing! {:?}", self.at());
+                Box::new(Identifier { kind: NodeType::Identifier, symbol: self.eat().value })
             }
         }
     }
