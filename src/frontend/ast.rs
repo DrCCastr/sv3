@@ -14,6 +14,9 @@ pub trait Stmt: fmt::Debug {
     fn as_numeric_literal(&self) -> Option<&NumericLiteral> {
         None
     }
+    fn as_binary_expr(&self) -> Option<&BinaryExpr> {
+        None
+    }
 }
 
 pub trait Expr: Stmt {
@@ -89,6 +92,9 @@ impl Stmt for Program {
 impl Stmt for BinaryExpr {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
+    }
+    fn as_binary_expr(&self) -> Option<&BinaryExpr> {
+        Some(self)
     }
 }
 impl Stmt for Identifier {
