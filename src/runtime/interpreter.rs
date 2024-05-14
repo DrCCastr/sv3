@@ -15,6 +15,10 @@ fn eval_program(program: &Program) -> SunVariable {
     lastEvaluated
 }
 
+fn eval_numeric_binary_expr(lhs: SunVariable, rhs: SunVariable, operator: ) -> SunVariable {
+    
+}
+
 fn eval_binary_expr(Binop: &BinaryExpr) -> SunVariable {
     let left = &Binop.left;
     let right = &Binop.right;
@@ -24,7 +28,7 @@ fn eval_binary_expr(Binop: &BinaryExpr) -> SunVariable {
     let rhs = evaluate(right.as_stmt());
     
     if (lhs.get_type(), rhs.get_type()) == (&EnumVariableType::NUMBER, &EnumVariableType::NUMBER) {
-        
+        return eval_numeric_binary_expr(lhs, rhs);
     }
     
     return SunVariable::new().set_value(EnumVariableType::NIL, "");
