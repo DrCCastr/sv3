@@ -1,6 +1,6 @@
 #![feature(arbitrary_self_types)]
 
-use crate::ast::{BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt};
+use crate::ast::{BinaryExpr, Expr, Identifier, NilLiteral, NodeType, NumericLiteral, Program, Stmt};
 use crate::lexer::{tokenize, Token, TokenType};
 
 pub struct Parser {
@@ -83,6 +83,10 @@ impl Parser {
             TokenType::Identifier => {
                 let symbol = self.eat().value.clone();
                 Box::new(Identifier { kind: NodeType::Identifier, symbol })
+            }
+            TokenType::Nil => {
+                self.eat();
+                Box::new(NilLiteral {kind: NodeType::NilLiteral, value: "a".to_string()})
             }
             TokenType::Number => {
                 let value = self.eat().value.parse().expect("Failed to parse number");

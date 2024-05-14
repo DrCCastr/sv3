@@ -1,14 +1,20 @@
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum NodeType {
     Program,
     NumericLiteral,
+    NilLiteral,
     Identifier,
     BinaryExpr,
 }
 
-pub trait Stmt: fmt::Debug {}
+pub trait Stmt: fmt::Debug {
+    fn get_kind(&self) -> NodeType;
+    fn as_numeric_literal(&self) -> Option<&NumericLiteral> {
+        None
+    }
+}
 
 pub trait Expr: Stmt {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt>;
@@ -21,7 +27,7 @@ pub struct Program {
 
 impl fmt::Debug for Program {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Program {{\nkind: {:#?},\nbody: {:#?} }}\n", self.kind, self.body)
+        write!(f, "Program {{\nkind: {:?},\nbody: {:#?} }}\n", self.kind, self.body)
     }
 }
 
@@ -36,7 +42,7 @@ impl fmt::Debug for BinaryExpr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "BinaryExpr {{\n\tkind: {:#?},\n\tleft: {:#?},\n\tright: {:#?},\n\toperator: {:#?} \n}}\n",
+            "BinaryExpr {{\n\tkind: {:?}\n\tleft: {:#?}\n\tright: {:#?}\n\toperator: {:?} \n}}\n",
             self.kind, self.left, self.right, self.operator
         )
     }
@@ -49,26 +55,66 @@ pub struct Identifier {
 
 impl fmt::Debug for Identifier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Identifier {{\n\tkind: {:#?},\n\tsymbol: {:#?} \n}}\n", self.kind, self.symbol)
+        write!(f, "Identifier {{\tkind: {:?},\tsymbol: {:?}}}\n", self.kind, self.symbol)
     }
 }
 
 pub struct NumericLiteral {
     pub kind: NodeType,
-    pub value: i32,
+    pub value: f64,
 }
 
 impl fmt::Debug for NumericLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "NumericLiteral {{\n\tkind: {:#?},\n\tvalue: {:#?} \n}}\n", self.kind, self.value)
+        write!(f, "NumericLiteral {{\tkind: {:?},\tvalue: {:?} }}\n", self.kind, self.value)
     }
 }
 
-impl Stmt for Program {}
-impl Stmt for BinaryExpr {}
-impl Stmt for Identifier {}
-impl Stmt for NumericLiteral {}
+pub struct NilLiteral {
+    pub kind: NodeType,
+    pub value: String
+}
 
+impl fmt::Debug for NilLiteral {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "NilLiteral {{kind: {:?}, value: {:?}}}", self.kind, self.value)
+    }
+}
+
+impl Stmt for Program {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+}
+impl Stmt for BinaryExpr {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+}
+impl Stmt for Identifier {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+}
+impl Stmt for NumericLiteral {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+    fn as_numeric_literal(&self) -> Option<&NumericLiteral> {
+        Some(self)
+    }
+}
+impl Stmt for NilLiteral {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+}
+
+impl Expr for NilLiteral {
+    fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+}
 impl Expr for BinaryExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self

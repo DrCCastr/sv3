@@ -42,6 +42,8 @@ fn isint(str: &str) -> bool {
 fn keyword(str: String) -> TokenType {
     if str == "let" {
         return TokenType::Let;
+    } else if str == "nil" {
+        return TokenType::Nil;
     }
     TokenType::Nil
 }
