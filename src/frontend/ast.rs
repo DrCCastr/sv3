@@ -17,10 +17,14 @@ pub trait Stmt: fmt::Debug {
     fn as_binary_expr(&self) -> Option<&BinaryExpr> {
         None
     }
+    fn as_program(&self) -> Option<&Program> {
+        None
+    }
 }
 
 pub trait Expr: Stmt {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt>;
+    fn as_stmt(&self) -> &dyn Stmt;
 }
 
 pub struct Program {
@@ -88,6 +92,9 @@ impl Stmt for Program {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
     }
+    fn as_program(&self) -> Option<&Program> {
+        Some(self)
+    }
 }
 impl Stmt for BinaryExpr {
     fn get_kind(&self) -> NodeType {
@@ -120,9 +127,16 @@ impl Expr for NilLiteral {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self
     }
+    fn as_stmt(&self) -> &dyn Stmt {
+        self
+    }
+
 }
 impl Expr for BinaryExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+    fn as_stmt(&self) -> &dyn Stmt {
         self
     }
 }
@@ -130,9 +144,15 @@ impl Expr for Identifier {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self
     }
+    fn as_stmt(&self) -> &dyn Stmt {
+        self
+    }
 }
 impl Expr for NumericLiteral {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+    fn as_stmt(&self) -> &dyn Stmt {
         self
     }
 }

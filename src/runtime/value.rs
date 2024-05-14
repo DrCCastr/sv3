@@ -15,6 +15,16 @@ pub struct Table {
     table_data: HashMap<String, SunVariable>,
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct SunVariable {
+    type_: EnumVariableType,
+    string_value: String,
+    number_value: f64,
+    bool_value: bool,
+    // function_value: Option<fn()>,
+    table_value: Table, // Utiliza a estrutura Table do módulo table
+}
+
 impl Table {
     pub fn new() -> Self {
         Self {
@@ -28,16 +38,6 @@ impl Table {
     pub fn remove_variable(&mut self, name: &str) {
         self.table_data.remove(name);
     }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct SunVariable {
-    type_: EnumVariableType,
-    string_value: String,
-    number_value: f64,
-    bool_value: bool,
-    // function_value: Option<fn()>,
-    table_value: Table, // Utiliza a estrutura Table do módulo table
 }
 
 impl SunVariable {
