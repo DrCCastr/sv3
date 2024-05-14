@@ -20,6 +20,14 @@ fn eval_numeric_binary_expr(lhs: SunVariable, rhs: SunVariable, operator: String
     
     if operator == "+" {
         result = lhs.get_number() + rhs.get_number();
+    } else if operator == "-" {
+        result = lhs.get_number() - rhs.get_number();
+    } else if operator == "*" {
+        result = lhs.get_number() * rhs.get_number();
+    } else if operator == "/" {
+        result = lhs.get_number() / rhs.get_number();
+    } else {
+        result = lhs.get_number() % rhs.get_number();
     }
     
     SunVariable::new().set_value(EnumVariableType::NUMBER, format!("{}", result))
