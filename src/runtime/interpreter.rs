@@ -2,8 +2,12 @@ use crate::ast::*;
 use crate::runtime::value::*;
 use std::fmt::format;
 use std::ops::Deref;
-use std::vec;
+use std::{any, vec};
 use std::rc::Rc;
+
+fn errorN(Char: &str) {
+    println!("Stmt not reconized: {}", Char);
+}
 
 fn eval_program(program: &Program) -> SunVariable {
     let mut lastEvaluated = SunVariable::new();
@@ -12,7 +16,7 @@ fn eval_program(program: &Program) -> SunVariable {
         lastEvaluated = evaluate(&**statement);
     }
     
-    lastEvaluated
+    return lastEvaluated
 }
 
 fn eval_numeric_binary_expr(lhs: SunVariable, rhs: SunVariable, operator: String) -> SunVariable {
@@ -30,7 +34,7 @@ fn eval_numeric_binary_expr(lhs: SunVariable, rhs: SunVariable, operator: String
         result = lhs.get_number() % rhs.get_number();
     }
     
-    SunVariable::new().set_value(EnumVariableType::NUMBER, format!("{}", result))
+    return SunVariable::new().set_value(EnumVariableType::NUMBER, format!("{}", result));
 }
 
 fn eval_binary_expr(Binop: &BinaryExpr) -> SunVariable {
@@ -41,7 +45,7 @@ fn eval_binary_expr(Binop: &BinaryExpr) -> SunVariable {
     let lhs = evaluate(left.as_stmt());
     let rhs = evaluate(right.as_stmt());
     
-    if (lhs.get_type(), rhs.get_type()) == (&EnumVariableType::NUMBER, &EnumVariableType::NUMBER) {
+    if lhs.get_type() == &EnumVariableType::NUMBER && rhs.get_type() == &EnumVariableType::NUMBER {
         return eval_numeric_binary_expr(lhs, rhs, Binop.operator.clone());
     }
     
@@ -54,6 +58,7 @@ pub fn evaluate(astNode: &dyn Stmt) -> SunVariable {
             if let Some(numeric_literal) = astNode.as_numeric_literal() {
                 return SunVariable::new().set_value(EnumVariableType::NUMBER, format!("{}", numeric_literal.value));
             } else {
+                errorN("NumericLiteral");
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
@@ -61,6 +66,7 @@ pub fn evaluate(astNode: &dyn Stmt) -> SunVariable {
             if let Some(binary_expr) = astNode.as_binary_expr() {
                 return eval_binary_expr(binary_expr);
             } else {
+                errorN("BinaryExpr");
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
@@ -68,10 +74,12 @@ pub fn evaluate(astNode: &dyn Stmt) -> SunVariable {
             if let Some(program) = astNode.as_program() {
                 return  eval_program(program);
             } else {
+                errorN("Program");
                 return  SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
         _ => {
+            errorN("Default");
             return SunVariable::new().set_value(EnumVariableType::NIL, "");
         }
     }

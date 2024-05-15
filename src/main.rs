@@ -16,8 +16,8 @@ fn main() {
     let mut content = String::new();
     File::open(&args[1]).expect("").read_to_string(&mut content);
     let tokens = frontend::parse::Parser::new().produce_ast(&content.to_string());
-    let mut result: SunVariable;
+    //println!("{:#?}", tokens);
     if let Some(programToken) = tokens.as_program() {
-        result = evaluate(programToken);
+        println!("{:#?}", evaluate(programToken));
     }
 }

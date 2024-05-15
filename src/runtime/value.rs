@@ -67,6 +67,7 @@ impl SunVariable {
             },
             _ => {}
         }
+        self.type_ = new_type;
         return self.clone();
     }
 
