@@ -61,7 +61,7 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
         } else if src[0] == ')' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::CloseParen));
         }
-        else if src[0] == '+' || src[0] == '-' || src[0] == '*' || src[0] == '/' {
+        else if src[0] == '+' || src[0] == '-' || src[0] == '*' || src[0] == '/' || src[0] == '%' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::BinaryOperator));
         }
         else if src[0] == '=' {

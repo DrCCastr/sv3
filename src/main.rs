@@ -19,7 +19,9 @@ fn main() {
     File::open(&args[1]).expect("").read_to_string(&mut content);
     let tokens = frontend::parse::Parser::new().produce_ast(&content.to_string());
     //println!("{:#?}", tokens);
+    let mut env = Environmment::new();
+    env.declare_var("x".to_string(), SunVariable::new().set_value(value::EnumVariableType::NUMBER, "100.0"));
     if let Some(programToken) = tokens.as_program() {
-        println!("{:#?}", evaluate(programToken,  Environmment::new()));
+        println!("{:#?}", evaluate(programToken,  env));
     }
 }
