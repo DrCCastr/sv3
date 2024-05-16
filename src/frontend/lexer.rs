@@ -39,6 +39,10 @@ fn isint(str: &str) -> bool {
     str.chars().all(|c| c.is_ascii_digit())
 }
 
+fn isnumber(str: &str) -> bool {
+    str.parse::<i64>().is_ok() || str.parse::<f64>().is_ok()
+}
+
 fn keyword(str: String) -> TokenType {
     if str == "let" {
         return TokenType::Let;
@@ -67,9 +71,9 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
         else if src[0] == '=' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::Equals));
         } else {
-            if isint(&src[0].to_string()) {
+            if isnumber(&src[0].to_string()) {
                 let mut num = String::new();
-                while !src.is_empty() && isint(&src[0].to_string()) {
+                while !src.is_empty() && (isnumber(&src[0].to_string()) || src[0] == '.') {
                     num.push(src.remove(0));
                 }
                 tokens.push(token(&num, TokenType::Number));
