@@ -11,6 +11,8 @@ use std::io::Read;
 use std::env;
 use std::io::stdin;
 
+use crate::environmment::Environmment;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut content = String::new();
@@ -18,6 +20,6 @@ fn main() {
     let tokens = frontend::parse::Parser::new().produce_ast(&content.to_string());
     //println!("{:#?}", tokens);
     if let Some(programToken) = tokens.as_program() {
-        println!("{:#?}", evaluate(programToken));
+        println!("{:#?}", evaluate(programToken,  Environmment::new()));
     }
 }
