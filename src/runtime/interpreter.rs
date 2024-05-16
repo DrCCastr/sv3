@@ -53,8 +53,9 @@ fn eval_binary_expr(Binop: &BinaryExpr, env: Environmment) -> SunVariable {
     return SunVariable::new().set_value(EnumVariableType::NIL, "");
 }
 
-pub fn eval_identifier(iden: Identifier, env: Environmment) -> SunVariable {
-    
+pub fn eval_identifier(iden: &Identifier, env: Environmment) -> SunVariable {
+    let val = env.look_up_var(iden.symbol.clone());
+    return val;
 }
 
 pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
