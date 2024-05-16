@@ -20,7 +20,9 @@ fn main() {
     let tokens = frontend::parse::Parser::new().produce_ast(&content.to_string());
     //println!("{:#?}", tokens);
     let mut env = Environmment::new();
-    env.declare_var("x".to_string(), SunVariable::new().set_value(value::EnumVariableType::NUMBER, "100.0"));
+    env.declare_var("true".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "true"));
+    env.declare_var("false".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "false"));
+    env.declare_var("nil".to_string(), SunVariable::new().set_value(value::EnumVariableType::NIL, ""));
     if let Some(programToken) = tokens.as_program() {
         println!("{:#?}", evaluate(programToken,  env));
     }
