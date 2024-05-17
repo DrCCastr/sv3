@@ -2,12 +2,12 @@ use std::{clone, vec::Vec, collections::HashMap};
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum TokenType {
-    Number,
+    Number, String,
     Identifier,
-    Equals,
+    Equals, Semicolon,
     OpenParen, CloseParen,
     BinaryOperator,
-    Let,
+    Let, Const,
     Nil,
     EOF
 }
@@ -46,8 +46,8 @@ fn isnumber(str: &str) -> bool {
 fn keyword(str: String) -> TokenType {
     if str == "let" {
         return TokenType::Let;
-    } else if str == "nil" {
-        return TokenType::Nil;
+    } else if str == "const" {
+        return  TokenType::Const;
     }
     TokenType::Nil
 }
@@ -70,6 +70,8 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
         }
         else if src[0] == '=' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::Equals));
+        } else if src[0] == ';'{
+            tokens.push(token(&src.remove(0).to_string(), TokenType::Semicolon));
         } else {
             if isnumber(&src[0].to_string()) {
                 let mut num = String::new();

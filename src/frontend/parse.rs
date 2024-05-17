@@ -1,6 +1,6 @@
 #![feature(arbitrary_self_types)]
 
-use crate::ast::{BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt};
+use crate::ast::{BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt, VarDeclaration};
 use crate::lexer::{tokenize, Token, TokenType};
 
 pub struct Parser {
@@ -46,7 +46,29 @@ impl Parser {
     }
 
     fn parse_stmt(&mut self) -> Box<dyn Stmt> {
-        self.parse_expr().into_boxed_stmt()
+        match self.at().type_ {
+            TokenType::Const => {
+                self.parse_var_declaration()
+            }
+            _ => {
+                self.parse_expr().into_boxed_stmt()
+            }
+        }
+    }
+    
+    fn parse_var_declaration(&mut self) -> Box<dyn Stmt> {
+        let isConstant = self.eat().type_ == TokenType::Const;
+        let identifier = self.expect(TokenType::Identifier, "Expected identifier name following let | const keyword").value;
+        
+        if self.at().type_ == TokenType::Semicolon {
+            self.eat();
+            return Box::new(VarDeclaration { kind: NodeType::VarDeclarationStmt, identifier: identifier, constant: isConstant, value: Box::new(Identifier { kind: NodeType::Identifier, symbol: "a".to_string()} )});
+        }
+        
+        self.expect(TokenType::Equals, "Expected equals following let | const");
+        self.expect(TokenType::Semicolon, "Expected Semicolon following let");
+        
+        Box::new(VarDeclaration { kind: NodeType::VarDeclarationStmt, identifier: identifier, constant: isConstant, value: Box::new(Identifier { kind: NodeType::Identifier, symbol: "a".to_string()} )})
     }
     
     fn parse_expr(&mut self) -> Box<dyn Expr> {

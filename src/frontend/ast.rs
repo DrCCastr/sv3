@@ -1,10 +1,13 @@
-use std::fmt;
+use std::{fmt};
 
 #[derive(Debug, Clone)]
 pub enum NodeType {
+    // Statements
     Program,
+    VarDeclarationStmt,
+    // Expressions
     NumericLiteral,
-    //NilLiteral,
+    StringLiteral,
     Identifier,
     BinaryExpr,
 }
@@ -23,11 +26,27 @@ pub trait Stmt: fmt::Debug {
     fn as_identifier(&self) -> Option<&Identifier> {
         None
     }
+    fn as_var_declaration(&self) -> Option<&VarDeclaration> {
+        None
+    }
 }
 
 pub trait Expr: Stmt {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt>;
     fn as_stmt(&self) -> &dyn Stmt;
+}
+
+pub struct VarDeclaration {
+    pub kind: NodeType,
+    pub constant: bool,
+    pub identifier: String,
+    pub value: Box<dyn Expr>,
+}
+
+impl fmt::Debug for VarDeclaration {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "VarDeclaration: {{kind: {:?}, constant: {:?}, iden:ifier: {:?}, value: {:#?}}}", self.kind, self.constant, self.identifier, self.value)
+    }
 }
 
 pub struct Program {
@@ -80,6 +99,14 @@ impl fmt::Debug for NumericLiteral {
     }
 }
 
+impl Stmt for VarDeclaration {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+    fn as_var_declaration(&self) -> Option<&VarDeclaration> {
+        Some(self)
+    }
+}
 impl Stmt for Program {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
