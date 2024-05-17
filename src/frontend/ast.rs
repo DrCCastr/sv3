@@ -4,7 +4,7 @@ use std::fmt;
 pub enum NodeType {
     Program,
     NumericLiteral,
-    NilLiteral,
+    //NilLiteral,
     Identifier,
     BinaryExpr,
 }
@@ -80,17 +80,6 @@ impl fmt::Debug for NumericLiteral {
     }
 }
 
-pub struct NilLiteral {
-    pub kind: NodeType,
-    pub value: String
-}
-
-impl fmt::Debug for NilLiteral {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "NilLiteral {{kind: {:?}, value: {:?}}}", self.kind, self.value)
-    }
-}
-
 impl Stmt for Program {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
@@ -123,21 +112,7 @@ impl Stmt for NumericLiteral {
         Some(self)
     }
 }
-impl Stmt for NilLiteral {
-    fn get_kind(&self) -> NodeType {
-        self.kind.clone()
-    }
-}
 
-impl Expr for NilLiteral {
-    fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
-        self
-    }
-    fn as_stmt(&self) -> &dyn Stmt {
-        self
-    }
-
-}
 impl Expr for BinaryExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self
