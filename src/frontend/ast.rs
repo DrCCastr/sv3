@@ -40,7 +40,7 @@ pub struct VarDeclaration {
     pub kind: NodeType,
     pub constant: bool,
     pub identifier: String,
-    pub value: Box<dyn Expr>,
+    pub value: Option<Box<dyn Expr>>,
 }
 
 impl fmt::Debug for VarDeclaration {

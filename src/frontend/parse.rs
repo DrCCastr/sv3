@@ -47,7 +47,7 @@ impl Parser {
 
     fn parse_stmt(&mut self) -> Box<dyn Stmt> {
         match self.at().type_ {
-            TokenType::Const => {
+            TokenType::Let => {
                 self.parse_var_declaration()
             }
             _ => {
@@ -57,19 +57,46 @@ impl Parser {
     }
     
     fn parse_var_declaration(&mut self) -> Box<dyn Stmt> {
-        let isConstant = self.eat().type_ == TokenType::Const;
-        let identifier = self.expect(TokenType::Identifier, "Expected identifier name following let | const keyword").value;
-        
+        let is_constant = self.eat().type_ == TokenType::Const;
+        let identifier = self.expect(
+            TokenType::Identifier,
+            "Expected identifier name following let | const keywords."
+        ).value.clone();
+
         if self.at().type_ == TokenType::Semicolon {
-            self.eat();
-            return Box::new(VarDeclaration { kind: NodeType::VarDeclarationStmt, identifier: identifier, constant: isConstant, value: Box::new(Identifier { kind: NodeType::Identifier, symbol: "a".to_string()} )});
+            self.eat(); // Consome o ponto e vírgula
+            if is_constant {
+                panic!("Must assign value to constant expression. No value provided.");
+            }
+
+            return Box::new(VarDeclaration {
+                kind: NodeType::VarDeclarationStmt,
+                identifier,
+                value: None,
+                constant: false,
+            });
         }
+
+        self.expect(
+            TokenType::Equals,
+            "Expected equals token following identifier in var declaration."
+        );
+
+        let declaration = VarDeclaration {
+            kind: NodeType::VarDeclarationStmt,
+            identifier,
+            value: Some(self.parse_expr()),
+            constant: is_constant,
+        };
+
+        self.expect(
+            TokenType::Semicolon,
+            "Variable declaration statement must end with semicolon."
+        );
         
-        self.expect(TokenType::Equals, "Expected equals following let | const");
-        self.expect(TokenType::Semicolon, "Expected Semicolon following let");
-        
-        Box::new(VarDeclaration { kind: NodeType::VarDeclarationStmt, identifier: identifier, constant: isConstant, value: Box::new(Identifier { kind: NodeType::Identifier, symbol: "a".to_string()} )})
+        Box::new(declaration)
     }
+
     
     fn parse_expr(&mut self) -> Box<dyn Expr> {
         self.parse_additive_expr() as Box<dyn Expr>
