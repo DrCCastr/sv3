@@ -8,6 +8,7 @@ use std::rc::Rc;
 
 fn errorN(Char: &str) {
     println!("Stmt not reconized: {}", Char);
+    std::process::exit(0);
 }
 
 fn eval_program(program: &Program, env: Environmment) -> SunVariable {
@@ -58,13 +59,17 @@ pub fn eval_identifier(iden: &Identifier, env: Environmment) -> SunVariable {
     return val;
 }
 
+pub fn eval_var_declaration(vardec: &VarDeclaration, env: Environmment) -> SunVariable {
+    
+}
+
 pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
     match astNode.get_kind() {
         NodeType::NumericLiteral => {
             if let Some(numeric_literal) = astNode.as_numeric_literal() {
                 return SunVariable::new().set_value(EnumVariableType::NUMBER, format!("{}", numeric_literal.value));
             } else {
-                errorN("NumericLiteral");
+                errorN(&format!("{:#?}", astNode).to_string());
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
@@ -72,7 +77,7 @@ pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
             if let Some(binary_expr) = astNode.as_binary_expr() {
                 return eval_binary_expr(binary_expr, env);
             } else {
-                errorN("BinaryExpr");
+                errorN(&format!("{:#?}", astNode).to_string());
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
@@ -80,7 +85,15 @@ pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
             if let Some(identifier) = astNode.as_identifier() {
                 return eval_identifier(identifier, env);
             } else {
-                errorN("Identifier");
+                errorN(&format!("{:#?}", astNode).to_string());
+                return SunVariable::new().set_value(EnumVariableType::NIL, "");
+            }
+        }
+        NodeType::VarDeclarationStmt => {
+            if let Some(vardeclaration) = astNode.as_var_declaration() {
+                return eval_var_declaration(vardeclaration, env);
+            } else {
+                errorN(&format!("{:#?}", astNode).to_string());
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
@@ -88,12 +101,12 @@ pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
             if let Some(program) = astNode.as_program() {
                 return  eval_program(program, env);
             } else {
-                errorN("Program");
-                return  SunVariable::new().set_value(EnumVariableType::NIL, "");
+                errorN(&format!("{:#?}", astNode).to_string());
+                return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
         _ => {
-            errorN("Default");
+            errorN(&format!("{:#?}", astNode).to_string());
             return SunVariable::new().set_value(EnumVariableType::NIL, "");
         }
     }
