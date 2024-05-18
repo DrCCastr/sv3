@@ -24,6 +24,6 @@ fn main() {
     env.declare_var("false".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "false"));
     env.declare_var("nil".to_string(), SunVariable::new().set_value(value::EnumVariableType::NIL, ""));
     if let Some(programToken) = tokens.as_program() {
-        println!("{:#?}", evaluate(programToken,  env));
+        println!("{:#?}", evaluate(programToken, &mut env));
     }
 }

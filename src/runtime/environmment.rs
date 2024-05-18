@@ -20,6 +20,7 @@ impl<'a> Environmment<'a> {
     }
 
     pub fn declare_var(&mut self, var_name: String, value: SunVariable) -> SunVariable {
+        println!("{}", var_name);
         if !self.variables.contains_key(&var_name) {
             let newvalue = value.clone();
             self.variables.insert(var_name, newvalue);

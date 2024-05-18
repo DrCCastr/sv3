@@ -12,7 +12,7 @@ fn errorN(Char: &str) {
     std::process::exit(0);
 }
 
-pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
+pub fn evaluate(astNode: &dyn Stmt, env: &mut Environmment) -> SunVariable {
     match astNode.get_kind() {
         NodeType::NumericLiteral => {
             if let Some(numeric_literal) = astNode.as_numeric_literal() {
@@ -40,7 +40,7 @@ pub fn evaluate(astNode: &dyn Stmt, env: Environmment) -> SunVariable {
         }
         NodeType::VarDeclarationStmt => {
             if let Some(vardeclaration) = astNode.as_var_declaration() {
-                return expressions::eval_var_declaration(vardeclaration, env);
+                return expressions::eval_var_declaration(&vardeclaration, env);
             } else {
                 errorN(&format!("{:#?}", astNode).to_string());
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");

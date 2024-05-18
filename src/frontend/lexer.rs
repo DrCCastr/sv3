@@ -93,6 +93,7 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
             } else if isskipabble(&src[0].to_string()) {
                 src.remove(0);
             } else {
+                src.remove(0);
                 println!("Unreconized character found in code: {}", &src[0].to_string());
             }
         }
