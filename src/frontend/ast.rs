@@ -7,6 +7,7 @@ pub enum NodeType {
     VarDeclarationStmt,
     // Expressions
     NumericLiteral,
+    AssignmentExpr,
     StringLiteral,
     Identifier,
     BinaryExpr,
@@ -29,6 +30,9 @@ pub trait Stmt: fmt::Debug {
     fn as_var_declaration(&self) -> Option<&VarDeclaration> {
         None
     }
+    fn as_assignment_expr(&self) -> Option<&AssignmentExpr> {
+        None
+    }
 }
 
 pub trait Expr: Stmt {
@@ -46,6 +50,18 @@ pub struct VarDeclaration {
 impl fmt::Debug for VarDeclaration {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "VarDeclaration: {{kind: {:?}, constant: {:?}, iden:ifier: {:?}, value: {:#?}}}", self.kind, self.constant, self.identifier, self.value)
+    }
+}
+
+pub struct AssignmentExpr {
+    pub kind: NodeType,
+    pub assgine: Box<dyn Expr>,
+    pub value: Box<dyn Expr>
+}
+
+impl fmt::Debug for AssignmentExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "AssignmentExpr: {{\n\tkind: {:?}\n\tassgine: {:#?}\n\tvalue: {:#?}\n}}", self.kind, self.assgine, self.value)
     }
 }
 
@@ -99,6 +115,14 @@ impl fmt::Debug for NumericLiteral {
     }
 }
 
+impl Stmt for AssignmentExpr {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+    fn as_assignment_expr(&self) -> Option<&AssignmentExpr> {
+        Some(self)
+    }
+}
 impl Stmt for VarDeclaration {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
@@ -140,6 +164,14 @@ impl Stmt for NumericLiteral {
     }
 }
 
+impl Expr for AssignmentExpr {
+    fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+    fn as_stmt(&self) -> &dyn Stmt {
+        self
+    }
+}
 impl Expr for BinaryExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self

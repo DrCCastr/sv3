@@ -1,6 +1,6 @@
 #![feature(arbitrary_self_types)]
 
-use crate::ast::{BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt, VarDeclaration};
+use crate::ast::{AssignmentExpr, BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt, VarDeclaration};
 use crate::lexer::{tokenize, Token, TokenType};
 
 pub struct Parser {
@@ -47,7 +47,7 @@ impl Parser {
 
     fn parse_stmt(&mut self) -> Box<dyn Stmt> {
         match self.at().type_ {
-            TokenType::Let => {
+            TokenType::Const | TokenType::Let => {
                 self.parse_var_declaration()
             }
             _ => {
@@ -96,10 +96,21 @@ impl Parser {
         
         Box::new(declaration)
     }
-
+    
+    fn parse_assignment_expr(&mut self) -> Box<dyn Expr> {
+        let left = self.parse_additive_expr() as Box<dyn Expr>;
+        
+        if self.at().type_ == TokenType::Equals {
+            self.eat();
+            let value = self.parse_assignment_expr();
+            return Box::new(AssignmentExpr {kind: NodeType::AssignmentExpr, assgine: left, value: value})
+        }
+        
+        left
+    }
     
     fn parse_expr(&mut self) -> Box<dyn Expr> {
-        self.parse_additive_expr() as Box<dyn Expr>
+        self.parse_assignment_expr()
     }
     
     fn parse_additive_expr(&mut self) -> Box<dyn Expr> {

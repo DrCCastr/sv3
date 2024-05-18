@@ -49,7 +49,7 @@ impl<'a> Environmment<'a> {
     pub fn assign_var(mut self, var_name: String, value: SunVariable) -> SunVariable {
         let mut env = self.clone().resolve(var_name.clone());
         if self.constants.contains(&var_name) {
-            println!("cannot can change a constant value");
+            println!("cannot can change the {} value, is a constant", var_name);
             std::process::exit(1);
         }
         env.variables.remove(&var_name.clone());
