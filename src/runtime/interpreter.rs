@@ -9,7 +9,7 @@ use std::rc::Rc;
 
 fn errorN(Char: &str) {
     println!("Stmt not reconized: {}", Char);
-    std::process::exit(0);
+    std::process::exit(1);
 }
 
 pub fn evaluate(astNode: &dyn Stmt, env: &mut Environmment) -> SunVariable {

@@ -41,7 +41,7 @@ pub fn eval_identifier(iden: &Identifier, env: &mut Environmment) -> SunVariable
 pub fn eval_var_declaration(vardec: &VarDeclaration, env: &mut Environmment) -> SunVariable {
     if let Some(Value) = &vardec.value {
         let value = evaluate(Value.as_stmt(), env);
-        env.declare_var(vardec.identifier.clone(), value);
+        env.declare_var(vardec.identifier.clone(), value, vardec.constant);
     }
     SunVariable::new()
 }
