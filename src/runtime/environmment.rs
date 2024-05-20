@@ -22,8 +22,7 @@ impl<'a> Environmment<'a> {
         self.parent = Some(parent_env);
     }
 
-    pub fn declare_var(&mut self, var_name: String, value: SunVariable, constant: bool) -> SunVariable {
-        println!("{}", var_name);
+    pub fn declare_var(&mut self, var_name: String, value: SunVariable, constant: bool, assingining: bool) -> SunVariable {
         if !self.variables.contains_key(&var_name) {
             let newvalue = value.clone();
             self.variables.insert(var_name.clone(), newvalue);
@@ -32,6 +31,10 @@ impl<'a> Environmment<'a> {
             }
             return value;
         } else {
+            if assingining {
+                self.variables.remove(&var_name.clone());
+                return self.declare_var(var_name, value, constant, true);
+            }
             println!("Cannot declare variable {}. At is already is defined", var_name);
             std::process::exit(1);
         }
@@ -46,17 +49,17 @@ impl<'a> Environmment<'a> {
         return SunVariable::new();
     }
 
-    pub fn assign_var(mut self, var_name: String, value: SunVariable) -> SunVariable {
+    /*pub fn assign_var(&mut self, var_name: String, value: SunVariable) -> SunVariable {
         let mut env = self.clone().resolve(var_name.clone());
         if self.constants.contains(&var_name) {
             println!("cannot can change the {} value, is a constant", var_name);
             std::process::exit(1);
         }
         env.variables.remove(&var_name.clone());
-        env.variables.insert(var_name, value.clone());
+        env.variables.insert(var_name.clone(), value.clone());
         
         return value;
-    }
+    }*/
 
     pub fn resolve(self, var_name: String) -> Environmment<'a> {
         if self.variables.contains_key(&var_name) {

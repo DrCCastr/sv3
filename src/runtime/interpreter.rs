@@ -46,6 +46,14 @@ pub fn evaluate(astNode: &dyn Stmt, env: &mut Environmment) -> SunVariable {
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
+        NodeType::AssignmentExpr => {
+            if let Some(asn) = astNode.as_assignment_expr() {
+                return expressions::eval_assingment(asn, env);
+            } else {
+                errorN("abc");
+                return SunVariable::new();
+            }
+        }
         NodeType::Program => {
             if let Some(program) = astNode.as_program() {
                 return statements::eval_program(program, env);

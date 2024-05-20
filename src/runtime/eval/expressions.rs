@@ -1,4 +1,5 @@
-use crate::{ast::{BinaryExpr, Expr, Identifier, VarDeclaration}, environmment::Environmment, interpreter::evaluate, value::{EnumVariableType, SunVariable}};
+use crate::{runtime, ast::{AssignmentExpr, BinaryExpr, Expr, Identifier, NodeType, Stmt, VarDeclaration}, environmment::Environmment, interpreter::evaluate, value::{EnumVariableType, SunVariable}};
+use std::mem;
 
 pub fn eval_numeric_binary_expr(lhs: SunVariable, rhs: SunVariable, operator: String, env: &Environmment) -> SunVariable {
     let mut result = 0.0;
@@ -41,7 +42,22 @@ pub fn eval_identifier(iden: &Identifier, env: &mut Environmment) -> SunVariable
 pub fn eval_var_declaration(vardec: &VarDeclaration, env: &mut Environmment) -> SunVariable {
     if let Some(Value) = &vardec.value {
         let value = evaluate(Value.as_stmt(), env);
-        env.declare_var(vardec.identifier.clone(), value, vardec.constant);
+        env.declare_var(vardec.identifier.clone(), value, vardec.constant, false);
     }
     SunVariable::new()
+}
+
+pub fn eval_assingment(node: &AssignmentExpr, env: &mut Environmment) -> SunVariable {
+    if node.assgine.get_kind() != NodeType::Identifier {
+        println!("Invalide LHS inaide assingment Expr {:#?}", node.assgine);
+        std::process::exit(1);
+    }
+    let mut varname = String::new();
+    varname = "j".to_string();
+    if let Some(iden) = node.as_identifier() {
+        varname = iden.symbol.clone();
+    }
+    let value = evaluate(node.value.as_stmt(), &mut env.clone());
+    
+    return env.declare_var(varname, value, true, true);
 }
