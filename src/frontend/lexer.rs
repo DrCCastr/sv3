@@ -61,7 +61,7 @@ fn keyword(str: String) -> TokenType {
 }
 
 fn isskipabble(str: &str) -> bool {
-    return str == " " || str == "\n" || str == "\t"
+    return str == " " || str == "\n" || str == "\t" || str == "\r"
 }
 
 pub fn tokenize(source_code: &str) -> Vec<Token> {
@@ -72,6 +72,17 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
             tokens.push(token(&src.remove(0).to_string(), TokenType::OpenParen));
         } else if src[0] == ')' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::CloseParen));
+        }
+        else if src[0] == '{' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::OpenBrace));
+        } else if src[0] == '}' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::CloseBrace));
+        }
+        else if src[0] == ':' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::Colon));
+        }
+        else if src[0] == ',' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::Comma));
         }
         else if src[0] == '+' || src[0] == '-' || src[0] == '*' || src[0] == '/' || src[0] == '%' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::BinaryOperator));

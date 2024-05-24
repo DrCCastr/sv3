@@ -63,6 +63,7 @@ pub fn evaluate(astNode: &dyn Stmt, env: &mut Environmment) -> SunVariable {
             }
         }
         _ => {
+            println!("{:#?}", astNode);
             errorN(&format!("{:#?}", astNode).to_string());
             return SunVariable::new().set_value(EnumVariableType::NIL, "");
         }

@@ -1,6 +1,6 @@
 #![feature(arbitrary_self_types)]
 
-use crate::ast::{AssignmentExpr, BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, Program, Stmt, VarDeclaration};
+use crate::ast::{AssignmentExpr, BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, ObjectLiteral, Program, Property, Stmt, VarDeclaration};
 use crate::lexer::{tokenize, Token, TokenType};
 
 pub struct Parser {
@@ -98,7 +98,7 @@ impl Parser {
     }
     
     fn parse_assignment_expr(&mut self) -> Box<dyn Expr> {
-        let left = self.parse_additive_expr() as Box<dyn Expr>;
+        let left = self.parse_object_literal() as Box<dyn Expr>;
         
         if self.at().type_ == TokenType::Equals {
             self.eat();
@@ -108,6 +108,41 @@ impl Parser {
         
         left
     }
+    
+    fn parse_object_literal(&mut self) -> Box<dyn Expr> {
+        if self.at().type_ != TokenType::OpenBrace {
+            return self.parse_additive_expr();
+        }
+        
+        self.eat(); // Avançar após a chave aberta
+        let mut properties: Vec<Property> = Vec::new();
+        
+        while self.not_eof() && self.at().type_ != TokenType::CloseBrace {
+            let key = self.expect(TokenType::Identifier, "Object literal key expected").value;
+            
+            if self.at().type_ == TokenType::Comma {
+                self.eat(); // Avançar após a vírgula
+                properties.push(Property { kind: NodeType::Property, key, value: None });
+                return Box::new(ObjectLiteral { kind: NodeType::ObjectLiteral, value: properties });
+            } else if self.at().type_ == TokenType::CloseBrace {
+                properties.push(Property { kind: NodeType::Property, key, value: None });
+                return Box::new(ObjectLiteral { kind: NodeType::ObjectLiteral, value: properties });
+            }
+            
+            self.expect(TokenType::Colon, "Missing colon following identifier in ObjectExpr");
+            let value = self.parse_expr();
+            
+            properties.push(Property { kind: NodeType::Property, key, value: Some(value) });
+            
+            if self.at().type_ != TokenType::CloseBrace {
+                self.expect(TokenType::Comma, "Expected comma or closing bracket following property");
+            }
+        }
+        
+        self.expect(TokenType::CloseBrace, "Object literal missing closing brace.");
+        Box::new(ObjectLiteral { kind: NodeType::ObjectLiteral, value: properties })
+    }
+    
     
     fn parse_expr(&mut self) -> Box<dyn Expr> {
         self.parse_assignment_expr()

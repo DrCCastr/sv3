@@ -6,8 +6,11 @@ pub enum NodeType {
     Program,
     VarDeclarationStmt,
     // Expressions
-    NumericLiteral,
     AssignmentExpr,
+    // Literals
+    Property,
+    ObjectLiteral,
+    NumericLiteral,
     StringLiteral,
     Identifier,
     BinaryExpr,
@@ -31,6 +34,12 @@ pub trait Stmt: fmt::Debug {
         None
     }
     fn as_assignment_expr(&self) -> Option<&AssignmentExpr> {
+        None
+    }
+    fn as_property(&self) -> Option<&Property> {
+        None
+    }
+    fn as_object_literal(&self) -> Option<&ObjectLiteral> {
         None
     }
 }
@@ -115,6 +124,29 @@ impl fmt::Debug for NumericLiteral {
     }
 }
 
+pub struct Property {
+    pub kind: NodeType,
+    pub key: String,
+    pub value: Option<Box<dyn Expr>>
+}
+
+impl fmt::Debug for Property {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Property {{\nKey: {},\n \nValue: {:?} }}", self.key, self.value)
+    }
+}
+
+pub struct ObjectLiteral {
+    pub kind: NodeType,
+    pub value: Vec<Property>,
+}
+
+impl fmt::Debug for ObjectLiteral {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "")
+    }
+}
+
 impl Stmt for AssignmentExpr {
     fn get_kind(&self) -> NodeType {
         self.kind.clone()
@@ -163,6 +195,22 @@ impl Stmt for NumericLiteral {
         Some(self)
     }
 }
+impl Stmt for ObjectLiteral {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+    fn as_object_literal(&self) -> Option<&ObjectLiteral> {
+        Some(self)
+    }
+}
+impl Stmt for Property {
+    fn get_kind(&self) -> NodeType {
+        self.kind.clone()
+    }
+    fn as_property(&self) -> Option<&Property> {
+        Some(self)
+    }
+}
 
 impl Expr for AssignmentExpr {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
@@ -189,6 +237,22 @@ impl Expr for Identifier {
     }
 }
 impl Expr for NumericLiteral {
+    fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+    fn as_stmt(&self) -> &dyn Stmt {
+        self
+    }
+}
+impl Expr for ObjectLiteral {
+    fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
+        self
+    }
+    fn as_stmt(&self) -> &dyn Stmt {
+        self
+    }
+}
+impl Expr for Property {
     fn into_boxed_stmt(self: Box<Self>) -> Box<dyn Stmt> {
         self
     }

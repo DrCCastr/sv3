@@ -1,5 +1,10 @@
-let j = 1;
+const obj = {
+  x: 100,
+  y: 32,
+  foo: 1,
+  complex: {
+    bar: true,
+  },
+};
 
-j = 3
-
-1 + j
+obj
