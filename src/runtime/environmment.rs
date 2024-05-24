@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::vec::Vec;
-use crate::value::*;
+use crate::value::{self, *};
 
 #[derive(Clone, PartialEq)]
 pub struct Environmment<'a> {
@@ -10,12 +10,24 @@ pub struct Environmment<'a> {
 }
 
 impl<'a> Environmment<'a> {
-    pub fn new() -> Self {
-        Self {
-            parent: None,
+    pub fn new(parent: Option<&'a Environmment<'a>>) -> Self {
+        let global = parent.is_some();
+        let mut env = Self {
+            parent: parent,
             variables: HashMap::new(),
             constants: Vec::new()
+        };
+        if global {
+            env.setupScope();
         }
+        
+        env
+    }
+
+    pub fn setupScope(&mut self) {
+        self.declare_var("true".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "true"), true, false);
+        self.declare_var("false".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "false"), true, false);
+        self.declare_var("nil".to_string(), SunVariable::new().set_value(value::EnumVariableType::NIL, ""), true, false);
     }
 
     pub fn set_parent(&mut self, parent_env: &'a Environmment<'a>) {

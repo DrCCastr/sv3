@@ -2,12 +2,20 @@ use std::{clone, vec::Vec, collections::HashMap};
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum TokenType {
-    Number, String,
+    // Literal type
+    Number, 
+    String,
     Identifier,
+    // Operators
+    Comma, Colon,
     Equals, Semicolon,
     OpenParen, CloseParen,
     BinaryOperator,
-    Let, Const,
+    OpenBrace, CloseBrace,
+    // Keywords
+    Let, 
+    Const,
+    // NaTT
     Nil,
     EOF
 }
