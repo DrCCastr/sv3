@@ -132,7 +132,7 @@ pub struct Property {
 
 impl fmt::Debug for Property {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Property {{\nKey: {},\n \nValue: {:?} }}", self.key, self.value)
+        write!(f, "Property {{\nkind: {:?}\nKey: {},\nValue: {:?} }}", self.kind, self.key, self.value)
     }
 }
 
@@ -143,7 +143,7 @@ pub struct ObjectLiteral {
 
 impl fmt::Debug for ObjectLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "")
+        write!(f, "ObjectLiteral {{\nkind: {:#?}, \nvalue: {:#?}}}", self.kind, self.value)
     }
 }
 
