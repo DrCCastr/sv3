@@ -143,7 +143,7 @@ pub struct ObjectLiteral {
 
 impl fmt::Debug for ObjectLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "ObjectLiteral {{\nkind: {:#?}, \nvalue: {:#?}}}", self.kind, self.value)
+        write!(f, "ObjectLiteral {{\nkind: {:?}, \nvalue: {:?}}}", self.kind, self.value)
     }
 }
 
