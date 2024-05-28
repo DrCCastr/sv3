@@ -38,6 +38,14 @@ pub fn evaluate(astNode: &dyn Stmt, env: &mut Environmment) -> SunVariable {
                 return SunVariable::new().set_value(EnumVariableType::NIL, "");
             }
         }
+        NodeType::ObjectLiteral => {
+            if let Some(obj) = astNode.as_object_literal() {
+                return  expressions::eval_object_expr(obj, env);
+            } else {
+                errorN("");
+                return  SunVariable::new().set_value(EnumVariableType::NIL, "");
+            }
+        }
         NodeType::VarDeclarationStmt => {
             if let Some(vardeclaration) = astNode.as_var_declaration() {
                 return expressions::eval_var_declaration(&vardeclaration, env);

@@ -9,6 +9,14 @@ pub struct Environmment<'a> {
     constants: Vec<String>
 }
 
+pub fn createGlobalEnv() -> Environmment<'static> {
+    let mut env = Environmment::new(None);
+    env.declare_var("true".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "true"), true, false);
+    env.declare_var("false".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "false"), true, false);
+    env.declare_var("nil".to_string(), SunVariable::new().set_value(value::EnumVariableType::NIL, ""), true, false);
+    return env;
+}
+
 impl<'a> Environmment<'a> {
     pub fn new(parent: Option<&'a Environmment<'a>>) -> Self {
         let global = parent.is_some();
@@ -18,16 +26,10 @@ impl<'a> Environmment<'a> {
             constants: Vec::new()
         };
         if global {
-            env.setupScope();
+            env = createGlobalEnv()
         }
         
         env
-    }
-
-    pub fn setupScope(&mut self) {
-        self.declare_var("true".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "true"), true, false);
-        self.declare_var("false".to_string(), SunVariable::new().set_value(value::EnumVariableType::BOOLEAN, "false"), true, false);
-        self.declare_var("nil".to_string(), SunVariable::new().set_value(value::EnumVariableType::NIL, ""), true, false);
     }
 
     pub fn set_parent(&mut self, parent_env: &'a Environmment<'a>) {

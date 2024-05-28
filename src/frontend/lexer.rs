@@ -9,9 +9,10 @@ pub enum TokenType {
     // Operators
     Comma, Colon,
     Equals, Semicolon,
-    OpenParen, CloseParen,
     BinaryOperator,
-    OpenBrace, CloseBrace,
+    OpenParen, CloseParen, // ()
+    OpenBrace, CloseBrace, // {}
+    OpenBracket, CloseBracket, // []
     // Keywords
     Let, 
     Const,
@@ -77,6 +78,11 @@ pub fn tokenize(source_code: &str) -> Vec<Token> {
             tokens.push(token(&src.remove(0).to_string(), TokenType::OpenBrace));
         } else if src[0] == '}' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::CloseBrace));
+        }
+        else if src[0] == '[' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::OpenBracket));
+        } else if src[0] == ']' {
+            tokens.push(token(&src.remove(0).to_string(), TokenType::CloseBracket));
         }
         else if src[0] == ':' {
             tokens.push(token(&src.remove(0).to_string(), TokenType::Colon));

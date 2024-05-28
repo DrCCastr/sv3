@@ -1,5 +1,7 @@
 #![feature(arbitrary_self_types)]
 
+use std::collections::HashMap;
+
 use crate::ast::{AssignmentExpr, BinaryExpr, Expr, Identifier, NodeType, NumericLiteral, ObjectLiteral, Program, Property, Stmt, VarDeclaration};
 use crate::lexer::{tokenize, Token, TokenType};
 
@@ -115,24 +117,24 @@ impl Parser {
         }
         
         self.eat(); // Avançar após a chave aberta
-        let mut properties: Vec<Property> = Vec::new();
+        let mut properties: HashMap<String, Property> = HashMap::new();
         
         while self.not_eof() && self.at().type_ != TokenType::CloseBrace {
             let key = self.expect(TokenType::Identifier, "Object literal key expected").value;
             
             if self.at().type_ == TokenType::Comma {
                 self.eat(); // Avançar após a vírgula
-                properties.push(Property { kind: NodeType::Property, key, value: None });
+                properties.insert(key.clone(), Property { kind: NodeType::Property, key, value: None });
                 return Box::new(ObjectLiteral { kind: NodeType::ObjectLiteral, value: properties });
             } else if self.at().type_ == TokenType::CloseBrace {
-                properties.push(Property { kind: NodeType::Property, key, value: None });
+                properties.insert(key.clone(), Property { kind: NodeType::Property, key, value: None });
                 return Box::new(ObjectLiteral { kind: NodeType::ObjectLiteral, value: properties });
             }
             
             self.expect(TokenType::Colon, "Missing colon following identifier in ObjectExpr");
             let value = self.parse_expr();
             
-            properties.push(Property { kind: NodeType::Property, key, value: Some(value) });
+            properties.insert(key.clone(), Property { kind: NodeType::Property, key, value: Some(value) });
             
             if self.at().type_ != TokenType::CloseBrace {
                 self.expect(TokenType::Comma, "Expected comma or closing bracket following property");

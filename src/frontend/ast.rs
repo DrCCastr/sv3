@@ -1,4 +1,4 @@
-use std::{fmt};
+use std::{collections::HashMap, fmt, iter::Map};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum NodeType {
@@ -58,7 +58,7 @@ pub struct VarDeclaration {
 
 impl fmt::Debug for VarDeclaration {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "VarDeclaration: {{kind: {:?}, constant: {:?}, iden:ifier: {:?}, value: {:#?}}}", self.kind, self.constant, self.identifier, self.value)
+        write!(f, "{{kind: {:?}, constant: {:?}, iden:ifier: {:?}, value: {:#?}}}", self.kind, self.constant, self.identifier, self.value)
     }
 }
 
@@ -70,7 +70,7 @@ pub struct AssignmentExpr {
 
 impl fmt::Debug for AssignmentExpr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "AssignmentExpr: {{\n\tkind: {:?}\n\tassgine: {:#?}\n\tvalue: {:#?}\n}}", self.kind, self.assgine, self.value)
+        write!(f, "{{\n\tkind: {:?}\n\tassgine: {:#?}\n\tvalue: {:#?}\n}}", self.kind, self.assgine, self.value)
     }
 }
 
@@ -81,7 +81,7 @@ pub struct Program {
 
 impl fmt::Debug for Program {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Program {{\nkind: {:?},\nbody: {:#?} }}\n", self.kind, self.body)
+        write!(f, "{{\nkind: {:?},\nbody: {:#?} }}\n", self.kind, self.body)
     }
 }
 
@@ -96,7 +96,7 @@ impl fmt::Debug for BinaryExpr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "BinaryExpr {{\n\tkind: {:?}\n\tleft: {:#?}\n\tright: {:#?}\n\toperator: {:?} \n}}\n",
+            "{{\n\tkind: {:?}\n\tleft: {:#?}\n\tright: {:#?}\n\toperator: {:?} \n}}\n",
             self.kind, self.left, self.right, self.operator
         )
     }
@@ -109,7 +109,7 @@ pub struct Identifier {
 
 impl fmt::Debug for Identifier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Identifier {{\tkind: {:?},\tsymbol: {:?}}}\n", self.kind, self.symbol)
+        write!(f, "{{\tkind: {:?},\tsymbol: {:?}}}\n", self.kind, self.symbol)
     }
 }
 
@@ -120,7 +120,7 @@ pub struct NumericLiteral {
 
 impl fmt::Debug for NumericLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "NumericLiteral {{\tkind: {:?},\tvalue: {:?} }}\n", self.kind, self.value)
+        write!(f, "{{\tkind: {:?},\tvalue: {:?} }}\n", self.kind, self.value)
     }
 }
 
@@ -132,18 +132,18 @@ pub struct Property {
 
 impl fmt::Debug for Property {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Property {{\nkind: {:?}\nKey: {},\nValue: {:?} }}", self.kind, self.key, self.value)
+        write!(f, "{{\nkind: {:?}\nKey: {},\nValue: {:?} }}", self.kind, self.key, self.value)
     }
 }
 
 pub struct ObjectLiteral {
     pub kind: NodeType,
-    pub value: Vec<Property>,
+    pub value: HashMap<String, Property>,
 }
 
 impl fmt::Debug for ObjectLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "ObjectLiteral {{\nkind: {:?}, \nvalue: {:?}}}", self.kind, self.value)
+        write!(f, "{{\nkind: {:?}, \nvalue: {:?}}}", self.kind, self.value)
     }
 }
 

@@ -1,3 +1,4 @@
+use core::fmt;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -7,36 +8,60 @@ pub enum EnumVariableType {
     STRING, 
     BOOLEAN, 
     FUNCTION, 
-    TABLE
+    OBJECT
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Table {
-    table_data: HashMap<String, SunVariable>,
+pub struct Object {
+    Object_data: HashMap<String, SunVariable>,
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct SunVariable {
     type_: EnumVariableType,
     string_value: String,
     number_value: f64,
     bool_value: bool,
-    // function_value: Option<fn()>,
-    table_value: Table, // Utiliza a estrutura Table do módulo table
+    Object_value: Object
 }
 
-impl Table {
+impl Object {
     pub fn new() -> Self {
         Self {
-            table_data: HashMap::new()
+            Object_data: HashMap::new()
         }
     }
     pub fn add_variable(&mut self, name: String, variable: SunVariable) {
-        self.table_data.insert(name, variable);
+        self.Object_data.insert(name, variable);
     }
     
     pub fn remove_variable(&mut self, name: &str) {
-        self.table_data.remove(name);
+        self.Object_data.remove(name);
+    }
+}
+
+impl fmt::Debug for SunVariable {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.type_ {
+            EnumVariableType::NIL => {
+                write!(f, "SunVariable [nil]")
+            }
+            EnumVariableType::NUMBER => {
+                write!(f, "SunVariable Number: {}", self.number_value)
+            }
+            EnumVariableType::STRING => {
+                write!(f, "SunVariable String: {}", self.string_value)
+            }
+            EnumVariableType::BOOLEAN => {
+                write!(f, "SunVariable Boolean: {}", self.bool_value)
+            }
+            EnumVariableType::OBJECT => {
+                write!(f, "SunVariable Object: {:#?}", self.Object_value)
+            }
+            _ => {
+                write!(f, "SunVariable [Invalid]")
+            }
+        }
     }
 }
 
@@ -47,7 +72,7 @@ impl SunVariable {
             string_value: String::new(),
             number_value: 0.0,
             bool_value: false,
-            table_value: Table::new(),
+            Object_value: Object::new(),
         }
     }
     pub fn set_value(&mut self, new_type: EnumVariableType, value: impl Into<String>) -> SunVariable {
@@ -86,8 +111,8 @@ impl SunVariable {
     pub fn get_bool(&self) -> bool {
         self.bool_value
     }
-
-    pub fn get_table(&self) -> &Table {
-        &self.table_value
+    
+    pub fn get_object(&mut self) -> &mut Object {
+        &mut self.Object_value
     }
 }
